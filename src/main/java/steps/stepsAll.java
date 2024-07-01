@@ -39,10 +39,10 @@ public class stepsAll {
         googleAfterSearch.goPageByLinkName(title);
     }
 
-    @Step("Наводим курсор на раздел \"Ноутбуки и компьютеры\" и переходим в раздел: {chapter}")
-    public static void openCatalog(String chapter){
+    @Step("Поиск в каталоге раздела: {chapter}")
+    public static void openLaptopCatalog(String chapter,String expectedUrl){
         CitilinkSearchInCatalog citilinkSearchInCatalog = new CitilinkSearchInCatalog(driver);
-        citilinkSearchInCatalog.searchChapterInCatalog(chapter);
+        citilinkSearchInCatalog.searchChapterInCatalog(chapter,expectedUrl);
 
     };
 }

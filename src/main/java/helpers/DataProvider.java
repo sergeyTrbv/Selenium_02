@@ -8,7 +8,8 @@ public class DataProvider {
 
     public static Stream<Arguments> providerCheckingLaptop(){
         return Stream.of(
-                Arguments.of("citilink", "Ситилинк - интернет-магазин техники, электроники ...", "ноутбуки")
+                Arguments.of("citilink", "Ситилинк - интернет-магазин техники, электроники ...",
+                        "Ноутбуки" ,"https://www.citilink.ru/catalog/noutbuki/?ref=mainmenu")
         );
     }
 }

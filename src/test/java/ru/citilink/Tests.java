@@ -13,16 +13,14 @@ public class Tests extends BaseTest {
     @DisplayName("Проверка поисковика citilink - всё в степах")
     @ParameterizedTest(name = "{displayName}: {arguments}")
     @MethodSource("helpers.DataProvider#providerCheckingLaptop")
-    public void testCitilinkSearchLaptopStepsAll(String searchQuery, String title, String chapter) {
+    public void testCitilinkSearchLaptopStepsAll(String searchQuery, String title,String chapter, String expectedUrl) {
 
         openSite("https://www.google.ru/", "Google", webDriver);
         searchInGoogle(searchQuery);
         validateSearchInGoogle(title);
         goSiteByLink(title);
-        openCatalog(chapter);
+        openLaptopCatalog(chapter,expectedUrl);
 
-
-//        checkCourse(money);
 
 
     }
