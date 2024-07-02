@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.CitilinkSearchInCatalog;
+import pages.CitilinkSetParameters;
 import pages.GoogleAfterSearch;
 import pages.GoogleBeforeSearch;
 
@@ -43,6 +44,15 @@ public class stepsAll {
     public static void openLaptopCatalog(String chapter,String expectedUrl){
         CitilinkSearchInCatalog citilinkSearchInCatalog = new CitilinkSearchInCatalog(driver);
         citilinkSearchInCatalog.searchChapterInCatalog(chapter,expectedUrl);
-
     };
+
+    @Step("Задаём параметр цен: {chapter}")
+    public static void setParameters(){
+        CitilinkSetParameters citilinkSetParameters = new CitilinkSetParameters(driver);
+        citilinkSetParameters.setParameters();
+    }
+
+
+
+
 }

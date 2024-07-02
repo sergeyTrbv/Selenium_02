@@ -20,6 +20,7 @@ public class Tests extends BaseTest {
         validateSearchInGoogle(title);
         goSiteByLink(title);
         openLaptopCatalog(chapter,expectedUrl);
+        setParameters();
 
 
 
