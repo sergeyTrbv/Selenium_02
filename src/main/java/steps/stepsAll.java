@@ -4,10 +4,7 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import pages.CitilinkSearchInCatalog;
-import pages.CitilinkSetParameters;
-import pages.GoogleAfterSearch;
-import pages.GoogleBeforeSearch;
+import pages.*;
 
 public class stepsAll {
 
@@ -46,13 +43,17 @@ public class stepsAll {
         citilinkSearchInCatalog.searchChapterInCatalog(chapter,expectedUrl);
     };
 
-    @Step("Задаём параметр цен: {chapter}")
+    @Step("Задаём параметы электроники: ")
     public static void setParameters(){
         CitilinkSetParameters citilinkSetParameters = new CitilinkSetParameters(driver);
         citilinkSetParameters.setParameters();
     }
 
-
+    @Step("Проверка количества товара на первой странице ")
+    public static void checkQuantityOnFirstPage(){
+        LaptopCountTest laptopCountTest = new LaptopCountTest(driver);
+        laptopCountTest.checkQuantity();
+    }
 
 
 }

@@ -66,7 +66,6 @@ public class CitilinkSearchInCatalog {
         wait.until(visibilityOfElementLocated(By.xpath("//h1[text()='Ноутбуки']")));
         String currentUrl = driver.getCurrentUrl();
         Assertions.assertEquals(expectedUrl, currentUrl, "URL страницы не соответствует ожидаемому");
-        System.out.println("______проверил_______");
     }
 
 

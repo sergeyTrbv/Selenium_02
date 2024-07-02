@@ -21,6 +21,7 @@ public class Tests extends BaseTest {
         goSiteByLink(title);
         openLaptopCatalog(chapter,expectedUrl);
         setParameters();
+        checkQuantityOnFirstPage();
 
 
 

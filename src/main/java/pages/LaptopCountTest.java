@@ -7,10 +7,19 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.List;
+
+import static helpers.Assertions.assertTrue;
+
 public class LaptopCountTest {
 
-//    private WebDriver driver;
-//    private WebDriverWait wait;
+    private WebDriver driver;
+    private WebDriverWait wait;
+
+    public LaptopCountTest(WebDriver driver) {
+        this.driver = driver;
+        this.wait = new WebDriverWait(driver, 10);
+    }
 //
 //    @Step("fefef")
 //    public void testLaptopCount() {
@@ -31,6 +40,20 @@ public class LaptopCountTest {
 //        // Вывести количество ноутбуков в консоль
 //        System.out.println("Количество ноутбуков: " + laptopCount);
 //    }
+
+
+
+    @Step("тест на 12 позиций")
+    public void checkQuantity() {
+
+        List<WebElement> productItems = driver.findElements(By.xpath("//div[contains(@class, 'e1l56t9a0')]"));
+        assertTrue(productItems.size() >= 12, "Количество позиций товара меньше 12");
+        System.out.println("Проверил что товара больше 12 штук");
+        System.out.println(productItems.size());
+    }
+
+
+
 
 
 }
