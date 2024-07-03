@@ -15,8 +15,8 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
 
 public class CitilinkSearchInCatalog {
 
-    private static final String CATALOG_PRODUCT_BUTTON = "//a[@href='/catalog/' and contains(@class, 'css-15x7smt') and @data-meta-name='DesktopHeaderFixed__catalog-menu']";
-//    private static final String CATALOG_PRODUCT_BUTTON = "//a[@data-meta-name='DesktopHeaderFixed__catalog-menu']";
+//    private static final String CATALOG_PRODUCT_BUTTON = "//a[@href='/catalog/' and contains(@class, 'css-15x7smt') and @data-meta-name='DesktopHeaderFixed__catalog-menu']";
+    private static final String CATALOG_PRODUCT_BUTTON = "//a[@data-meta-name='DesktopHeaderFixed__catalog-menu']";
 //    private static final String CATALOG_PRODUCT_BUTTON = "//a[@data-meta-name='DesktopHeaderFixed__catalog-menu']//span[@class='e1pbr73b0 css-bh6qcy e1dsa0940']";
     private static final String LAPTOP_AND_PC_BUTTON = "//div[@class='PopupScrollContainer']//span[@color='None' and text()='Ноутбуки и компьютеры']";
     private static final String LAPTOP_BUTTON = "//a[@href='/catalog/noutbuki/?ref=mainmenu']//span[text()='Ноутбуки']";
@@ -33,8 +33,14 @@ public class CitilinkSearchInCatalog {
 
     @Step("Открытие каталога")
     private void openCatalog() {
-        wait.until(visibilityOfElementLocated(By.xpath(CATALOG_PRODUCT_BUTTON)));
-        WebElement catalogProductButton = driver.findElement(By.xpath(CATALOG_PRODUCT_BUTTON));
+//        wait.until(visibilityOfElementLocated(By.xpath(CATALOG_PRODUCT_BUTTON)));
+//        WebElement catalogProductButton = driver.findElement(By.xpath(CATALOG_PRODUCT_BUTTON));
+        WebElement catalogProductButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(CATALOG_PRODUCT_BUTTON)));
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         catalogProductButton.click();
     }
 

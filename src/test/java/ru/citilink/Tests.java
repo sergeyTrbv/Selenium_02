@@ -23,8 +23,6 @@ public class Tests extends BaseTest {
         setParameters();
         checkQuantityOnFirstPage();
 
-
-
     }
 
 }

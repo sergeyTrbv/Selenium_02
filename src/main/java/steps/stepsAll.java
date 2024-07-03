@@ -53,7 +53,10 @@ public class stepsAll {
     public static void checkQuantityOnFirstPage(){
         LaptopCountTest laptopCountTest = new LaptopCountTest(driver);
         laptopCountTest.checkQuantity();
+//        laptopCountTest.checkConditions();
+        laptopCountTest.checkConditionsOnAllPages();
     }
+
 
 
 }
