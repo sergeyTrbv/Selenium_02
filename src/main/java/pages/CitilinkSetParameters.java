@@ -28,6 +28,8 @@ public class CitilinkSetParameters {
     //можно передать в параметрах цену
     @Step("Установка верхнего и нижнего диапазона цен")
     private void setPriceParameters() {
+
+
         wait.until(visibilityOfElementLocated(By.xpath(MIN_PRICE_FIELD)));
         wait.until(visibilityOfElementLocated(By.xpath(MAX_PRICE_FIELD)));
 
@@ -41,10 +43,17 @@ public class CitilinkSetParameters {
         maxPriceField.click();
         maxPriceField.clear();
         maxPriceField.sendKeys("120000");
+        minPriceField.click();
 
         wait.until(visibilityOfElementLocated(By.xpath(COOKIE_BUTTON)));
         WebElement cookieButon = driver.findElement(By.xpath(COOKIE_BUTTON));
         cookieButon.click();
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Step("Выбор бренда")
