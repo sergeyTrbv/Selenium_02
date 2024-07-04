@@ -14,12 +14,10 @@ import java.util.concurrent.TimeUnit;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 public class CitilinkSearchInCatalog {
-
-//    private static final String CATALOG_PRODUCT_BUTTON = "//a[@href='/catalog/' and contains(@class, 'css-15x7smt') and @data-meta-name='DesktopHeaderFixed__catalog-menu']";
     private static final String CATALOG_PRODUCT_BUTTON = "//a[@data-meta-name='DesktopHeaderFixed__catalog-menu']";
-//    private static final String CATALOG_PRODUCT_BUTTON = "//a[@data-meta-name='DesktopHeaderFixed__catalog-menu']//span[@class='e1pbr73b0 css-bh6qcy e1dsa0940']";
     private static final String LAPTOP_AND_PC_BUTTON = "//div[@class='PopupScrollContainer']//span[@color='None' and text()='Ноутбуки и компьютеры']";
     private static final String LAPTOP_BUTTON = "//a[@href='/catalog/noutbuki/?ref=mainmenu']//span[text()='Ноутбуки']";
+    private static final String NAME_PRODUCT = "//h1[text()='Ноутбуки']";
 
     private WebDriver driver;
     private WebDriverWait wait;
@@ -59,19 +57,20 @@ public class CitilinkSearchInCatalog {
         laptopButton.click();
     }
 
+    @Step("Проверка перехода на страницу {chapter}")
+    private void verifyTransitionToLaptopPage(String chapter, String expectedUrl) {
+//        wait.until(visibilityOfElementLocated(By.xpath("//h1[text()='Ноутбуки']")));
+        wait.until(visibilityOfElementLocated(By.xpath(NAME_PRODUCT)));
+        String currentUrl = driver.getCurrentUrl();
+        Assertions.assertEquals(expectedUrl, currentUrl, "URL страницы не соответствует ожидаемому");
+    }
+
     @Step("Шаги по поиску раздела и проверка раздела {chapter}")
     public void searchChapterInCatalog(String chapter, String expectedUrl) {
         openCatalog();
         hoverOverLaptopAndPC();
         selectLaptop();
         verifyTransitionToLaptopPage(chapter, expectedUrl);
-    }
-
-    @Step("Проверка перехода на страницу {chapter}")
-    private void verifyTransitionToLaptopPage(String chapter, String expectedUrl) {
-        wait.until(visibilityOfElementLocated(By.xpath("//h1[text()='Ноутбуки']")));
-        String currentUrl = driver.getCurrentUrl();
-        Assertions.assertEquals(expectedUrl, currentUrl, "URL страницы не соответствует ожидаемому");
     }
 
 

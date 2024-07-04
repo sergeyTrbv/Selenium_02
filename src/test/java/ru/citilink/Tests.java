@@ -22,6 +22,7 @@ public class Tests extends BaseTest {
         openLaptopCatalog(chapter,expectedUrl);
         setParameters();
         checkQuantityOnFirstPage();
+        GetProductInTheFirstPage();
 
     }
 

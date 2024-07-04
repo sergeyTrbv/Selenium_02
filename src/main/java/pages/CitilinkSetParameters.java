@@ -14,7 +14,8 @@ public class CitilinkSetParameters {
     private static final String MIN_PRICE_FIELD = "//div[@data-meta-name='FilterDropdown' and @data-meta-value='Цена']//input[@data-meta-name='FilterRangeGroup__input-min']";
     private static final String MAX_PRICE_FIELD = "//div[@data-meta-name='FilterDropdown' and @data-meta-value='Цена']//input[@data-meta-name='FilterRangeGroup__input-max']";
     private static final String COOKIE_BUTTON = "//button[@data-meta-disabled='false' and @type='button']//span[text()='Я согласен']";
-        private static final String CHECKBOX_HP = "//input[@type='checkbox' and @id='hp']";
+    private static final String BRAND_TABLE = "//div[@data-meta-name='FilterDropdown' and @data-meta-value='Бренд']";
+    private static final String CHECKBOX_HP = "//input[@type='checkbox' and @id='hp']";
     private static final String CHECKBOX_LENOVO = "//input[@type='checkbox' and @id='lenovo']";
     private WebDriver driver;
     private WebDriverWait wait;
@@ -59,7 +60,8 @@ public class CitilinkSetParameters {
     @Step("Выбор бренда")
     private void choosingBrand() {
         JavascriptExecutor js = (JavascriptExecutor) driver;
-        WebElement element = driver.findElement(By.xpath("//div[@data-meta-name='FilterDropdown' and @data-meta-value='Бренд']"));
+//        WebElement element = driver.findElement(By.xpath("//div[@data-meta-name='FilterDropdown' and @data-meta-value='Бренд']"));
+        WebElement element = driver.findElement(By.xpath(BRAND_TABLE));
         js.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element);
 
         WebElement checkBoxHP = driver.findElement(By.xpath(CHECKBOX_HP));

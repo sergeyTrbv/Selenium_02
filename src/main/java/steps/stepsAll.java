@@ -53,10 +53,14 @@ public class stepsAll {
     public static void checkQuantityOnFirstPage(){
         LaptopCountTest laptopCountTest = new LaptopCountTest(driver);
         laptopCountTest.checkQuantity();
-//        laptopCountTest.checkConditions();
         laptopCountTest.checkConditionsOnAllPages();
     }
-
-
+    @Step("Возвращаемся на первую страницу")
+    public static void GetProductInTheFirstPage(){
+        CitilinkGetProduct citilinkGetProduct = new CitilinkGetProduct(driver);
+//        citilinkGetProduct.backPage();
+//        citilinkGetProduct.getFirstproduct();
+        citilinkGetProduct.productComparison();
+    }
 
 }

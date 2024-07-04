@@ -12,8 +12,9 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
 public class GoogleAfterSearch {
 
 
-    private static final String SEARCH_RESULTS_HEAD = "//div[@id='rso']//div[@data-snc or @class='g']" +
-            "//a[@href]//h3[contains(.,'";
+    private static final String SEARCH_RESULTS_HEAD = "//div[@id='rso']//div[@data-snc or @class='g']//a[@href]//h3[contains(.,'";
+    //Вместо SEARCH_RESULTS_HEAD:
+    // private static final String SEARCH_RESULTS_HEAD = "//div[@id='rso']//a[@href]//h3[contains(.,'";
     private static final String SEARCH_RESULT_TAIL = "')]";
 
     private WebDriver driver;
