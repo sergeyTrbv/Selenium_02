@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import static helpers.Properties.testsProperties;
 import static steps.stepsAll.*;
 
 /**
@@ -34,7 +35,7 @@ public class Tests extends BaseTest {
     public void testCitilinkProductStepsAll(String searchQuery, String title, String chapter, String expectedUrl,
                                             String minPrice, String maxPrice) {
 
-        openSite("https://www.google.ru/", "Google", webDriver);
+        openSite(testsProperties.googleUrl(), "Google", webDriver);
         searchInGoogle(searchQuery);
         validateSearchInGoogle(title);
         goSiteByLink(title);

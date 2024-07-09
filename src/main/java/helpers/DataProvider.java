@@ -4,6 +4,8 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
+import static helpers.Properties.testsProperties;
+
 /**
  * Класс {@code DataProvider} предоставляет данные для тестовых методов.
  *
@@ -21,7 +23,7 @@ public class DataProvider {
     public static Stream<Arguments> providerCheckingLaptop() {
         return Stream.of(
                 Arguments.of("citilink", "Ситилинк - интернет-магазин техники, электроники ...",
-                        "Ноутбуки", "https://www.citilink.ru/catalog/noutbuki/?ref=mainmenu","20000","120000")
+                        "Ноутбуки", testsProperties.citilinkUrl(),"20000","120000")
         );
     }
 }
