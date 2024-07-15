@@ -1,7 +1,8 @@
-package pages;
+package pages.citilink;
 
 
 import helpers.Assertions;
+import helpers.LoadingHelper;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -11,6 +12,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Класс {@code LaptopCountTest} предназначен для тестирования количества и характеристик ноутбуков в каталоге.
@@ -22,7 +24,7 @@ public class LaptopCountTest {
     /**
      * Объект String с шаблоном XPath для карточек продуктов в каталоге.
      */
-    private static final String PRODUCT_CARD = "//div[contains(@class, 'e1l56t9a0')]";
+    private static final String PRODUCT_CARD = "//div[@data-meta-name='ProductVerticalSnippet']";
 
     /**
      * Объект String с шаблоном XPath для кнопки "Следующая" для перехода на следующую страницу каталога.
@@ -32,29 +34,14 @@ public class LaptopCountTest {
     /**
      * Объект String с шаблоном XPath для элементов с описанием товара в каталоге.
      */
-    private static final String TITLE_ELEMENTS_IN_CATALOG = ".//a[contains(@class, 'app-catalog-9gnskf') and " +
-            "not(ancestor::div[@data-meta-name='ProductsCompilation__slide'])]";
+    private static final String TITLE_ELEMENTS_IN_CATALOG = "//div[@data-meta-name='ProductVerticalSnippet']" +
+            "//a[@data-meta-name='Snippet__title']";
 
     /**
      * Объект String с шаблоном XPath для элементов с ценами товара в каталоге.
      */
-    private static final String PRICE_ELEMENTS_IN_CATALOG = ".//span[contains(@class, 'e1j9birj0') and " +
-            "not(ancestor::div[@data-meta-name='ProductsCompilation__slide'])]";
-
-    /**
-     * Минимальное количество продуктов, которое должно быть на странице.
-     */
-    private static final int MIN_PRODUCT_COUNT = 12;
-
-    /**
-     * Минимальная цена продукта.
-     */
-    private static final int MIN_PRICE = 20000;
-
-    /**
-     * Максимальная цена продукта.
-     */
-    private static final int MAX_PRICE = 120000;
+    private static final String PRICE_ELEMENTS_IN_CATALOG = "//div[@data-meta-name='ProductVerticalSnippet']" +
+            "//span[@data-meta-is-total='notTotal']";
 
     /**
      * Экземпляр WebDriver для взаимодействия с браузером.
@@ -65,6 +52,11 @@ public class LaptopCountTest {
      * Экземпляр WebDriverWait для ожидания элементов на странице.
      */
     private WebDriverWait wait;
+
+    /**
+     * Объект типа {@code LoadingHelper} для ожидания загрузки элементов на странице.
+     */
+    private LoadingHelper loadingHelper;
 
     /**
      * Текущая страница каталога.
@@ -79,6 +71,7 @@ public class LaptopCountTest {
     public LaptopCountTest(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, 20);
+        this.loadingHelper = new LoadingHelper(driver, wait);
     }
 
     /**
@@ -86,10 +79,10 @@ public class LaptopCountTest {
      * Убеждается, что количество элементов не меньше {@code MIN_PRODUCT_COUNT}.
      */
     @Step("Проверка количества элементов на первой странице каталога")
-    public void checkProductQuantityOnFirstPage() {
+    public void checkProductQuantityOnFirstPage(int minProductCountInPage) {
         List<WebElement> productItems = driver.findElements(By.xpath(PRODUCT_CARD));
-        Assertions.assertTrue(productItems.size() >= MIN_PRODUCT_COUNT,
-                "Количество позиций товара меньше " + MIN_PRODUCT_COUNT);
+        Assertions.assertTrue(productItems.size() >= minProductCountInPage,
+                "Количество позиций товара меньше " + minProductCountInPage);
     }
 
     /**
@@ -97,10 +90,11 @@ public class LaptopCountTest {
      * Переходит на следующую страницу, пока она доступна, и проверяет условия на каждой странице.
      */
     @Step("Проверка соблюдения условий на всех страницах у всех элементов")
-    public void checkConditionsOnAllPages() {
+    public void checkConditionsOnAllPages(List<String> brand, String minPrice, String maxPrice) {
         boolean hasNextPage = true;
+
         while (hasNextPage) {
-            checkPageConditions();
+            checkPageConditions(brand, minPrice, maxPrice);
             hasNextPage = navigateToNextPage();
         }
     }
@@ -110,10 +104,10 @@ public class LaptopCountTest {
      * Включает проверку названий брендов и цен.
      */
     @Step("Проверка условий на текущей странице")
-    private void checkPageConditions() {
-        waitForPageLoad();
-        checkBrandNames();
-        checkPrices();
+    private void checkPageConditions(List<String> brand, String minPrice, String maxPrice) {
+//        waitForPageLoad();
+        checkBrandNames(brand);
+        checkPrices(minPrice, maxPrice);
     }
 
     /**
@@ -121,30 +115,34 @@ public class LaptopCountTest {
      * Убеждается, что названия содержат "HP" или "Lenovo".
      */
     @Step("Проверка названий брендов на текущей странице")
-    private void checkBrandNames() {
+    private void checkBrandNames(List<String> brand) {
         List<WebElement> productElementsTitle = driver.findElements(By.xpath(TITLE_ELEMENTS_IN_CATALOG));
         for (WebElement productElement : productElementsTitle) {
             String title = productElement.getAttribute("title");
-            Assertions.assertTrue(title.contains("HP") || title.contains("Lenovo"),
+            boolean containsBrand = brand.stream().anyMatch(b -> Pattern.compile(Pattern.quote(b), Pattern.CASE_INSENSITIVE).matcher(title).find());
+            Assertions.assertTrue(containsBrand,
                     "На странице " + currentPage +
-                            " название бренда техники не соответствует 'HP' или 'Lenovo'");
+                            " название бренда техники не соответствует ни одному из ожидаемых брендов: " + brand);
         }
     }
+
 
     /**
      * Метод {@code checkPrices} проверяет цены на текущей странице.
      * Убеждается, что цены находятся в диапазоне от {@code MIN_PRICE} до {@code MAX_PRICE}.
      */
     @Step("Проверка цен на текущей странице")
-    private void checkPrices() {
+    private void checkPrices(String minPrice, String maxPrice) {
+        int minPriceInt = Integer.parseInt(minPrice);
+        int maxPriceInt = Integer.parseInt(maxPrice);
         List<WebElement> productElementsPrice = driver.findElements(By.xpath(PRICE_ELEMENTS_IN_CATALOG));
         for (WebElement productElement : productElementsPrice) {
             String priceText = productElement.getText().replace(" ", "").
                     replace("₽", "");
             int price = Integer.parseInt(priceText);
-            Assertions.assertTrue(price >= MIN_PRICE && price <= MAX_PRICE,
+            Assertions.assertTrue(price >= minPriceInt && price <= maxPriceInt,
                     "На странице " + currentPage + " цена " + price +
-                            " не соответствует вилке от " + MIN_PRICE + " до " + MAX_PRICE);
+                            " не соответствует вилке от " + minPriceInt + " до " + maxPriceInt);
         }
     }
 
@@ -158,7 +156,7 @@ public class LaptopCountTest {
         List<WebElement> nextPageButtons = driver.findElements(By.xpath(NEXT_BUTTON));
         if (!nextPageButtons.isEmpty() && nextPageButtons.get(0).isEnabled()) {
             WebElement nextButton = nextPageButtons.get(0);
-            scrollIntoViewAndClick(nextButton);
+            clickElement(nextButton);
             currentPage++;
             return true;
         } else {
@@ -166,31 +164,12 @@ public class LaptopCountTest {
         }
     }
 
-    /**
-     * Метод {@code scrollIntoViewAndClick} прокручивает элемент в поле зрения и кликает по нему.
-     *
-     * @param element элемент, который нужно прокрутить и кликнуть.
-     */
-    @Step("Прокрутка элемента в поле зрения и клик")
-    private void scrollIntoViewAndClick(WebElement element) {
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element);
+    private void clickElement(WebElement element) {
         wait.until(ExpectedConditions.elementToBeClickable(element));
-        js.executeScript("arguments[0].click();", element);
+        //элемент перехвачен
+        element.click();
+        loadingHelper.loading();
         wait.until(ExpectedConditions.stalenessOf(element));
-    }
-
-    /**
-     * Ожидает загрузки страницы.
-     * Используется Thread.sleep для простоты, хотя это не рекомендуется для реальных приложений.
-     */
-    @Step("знаю что нельзя")
-    private void waitForPageLoad() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }
 

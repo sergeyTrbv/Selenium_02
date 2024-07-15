@@ -5,43 +5,44 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static helpers.Properties.testsProperties;
-import static steps.stepsAll.*;
+import java.util.List;
+
+import static steps.StepsAll.*;
 
 /**
- * Класс {@code Tests} содержит тестовые методы, которые проверяют функциональность поисковика и интернет-магазина.
- * Наследуется от класса {@code BaseTest}, который предоставляет базовую настройку и инициализацию веб-драйвера.
+ * Класс {@code Tests} содержит параметризованные тесты для проверки функциональности поисковика сайта Citilink.
+ * Тесты используют шаги, определенные в классе {@code StepsAll}, и данные, предоставляемые {@code DataProvider}.
  *
  * @author sergeyTrbv
  */
 public class Tests extends BaseTest {
 
     /**
-     * Метод {@code testCitilinkProductStepsAll} проверяет поиск товара на сайте Citilink.
-     * Использует параметризованный тест с данными, предоставленными методом
-     * {@code providerCheckingLaptop} из класса {@code DataProvider}.
+     * Метод проверяет функциональность поисковика Citilink, используя предоставленные параметры.
      *
-     * @param searchQuery строка запроса для поиска в Google
-     * @param title       заголовок страницы, который должен быть найден в результатах поиска
-     * @param chapter     название раздела, который должен быть открыт на сайте Citilink
-     * @param expectedUrl ожидаемый URL страницы с ноутбуками на сайте Citilink
-     * @param minPrice    минимальная стоимость товара
-     * @param maxPrice    максимальная стоимость товара
+     * @param startUrl URL начальной страницы для открытия сайта.
+     * @param title Ожидаемый заголовок страницы.
+     * @param textMenu Текст меню для навигации.
+     * @param section Секция каталога для выбора.
+     * @param chapter Глава каталога для выбора.
+     * @param minPrice Минимальная цена для фильтрации товаров.
+     * @param maxPrice Максимальная цена для фильтрации товаров.
+     * @param brand Список брендов для фильтрации товаров.
+     * @param minProductCountInPage Минимальное ожидаемое количество товаров на странице.
      */
     @Feature("Проверка поисковика citilink")
     @DisplayName("Проверка поисковика citilink - всё в степах")
     @ParameterizedTest(name = "{displayName}: {arguments}")
     @MethodSource("helpers.DataProvider#providerCheckingLaptop")
-    public void testCitilinkProductStepsAll(String searchQuery, String title, String chapter, String expectedUrl,
-                                            String minPrice, String maxPrice) {
+    public void testCitilinkProductStepsAll(String startUrl, String title, String textMenu, String section,
+                                            String chapter, String minPrice, String maxPrice, List<String> brand,
+                                            int minProductCountInPage) {
 
-        openSite(testsProperties.googleUrl(), "Google", webDriver);
-        searchInGoogle(searchQuery);
-        validateSearchInGoogle(title);
-        goSiteByLink(title);
-        openCatalog(chapter, expectedUrl);
-        setParameters(minPrice, maxPrice);
-        checkingElements();
+
+        openSite(startUrl, title, webDriver);
+        openCatalog(textMenu, section, chapter);
+        setParameters(minPrice, maxPrice, brand);
+        checkingElements(minProductCountInPage, brand, minPrice, maxPrice);
         returnAndSearchElement();
     }
 }

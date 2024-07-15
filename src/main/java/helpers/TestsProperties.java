@@ -14,9 +14,23 @@ import org.aeonbits.owner.Config;
         "system:env",
         "file:src/main/resources/tests.properties"})
 public interface TestsProperties extends Config {
-    @Config.Key("google.url")
-    String googleUrl();
 
-    @Config.Key("citilink.url")
-    String citilinkUrl();
+    @Config.Key("page.load.strategy")
+    String pageLoadStrategy();
+
+    @Config.Key("implicit.wait.timeout")
+
+    long implicitWaitTimeout();
+
+    @Config.Key("page.load.timeout")
+
+    long pageLoadTimeout();
+
+    @Config.Key("script.timeout")
+
+    long scripttTimeout();
+
+    @Config.Key("page.load.timeout.capabilities")
+    int pageLoadTimeoutCapabilities();
+
 }
