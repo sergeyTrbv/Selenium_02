@@ -5,9 +5,15 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.util.List;
 
-
+/**
+ * Класс {@code SetParameters} предназначен для установки параметров на веб-сайте,
+ * таких как диапазон цен и выбор брендов.
+ *
+ * @autor SergeyTrbv
+ */
 public class SetParameters {
 
     /**
@@ -25,13 +31,17 @@ public class SetParameters {
     /**
      * Объект String с шаблоном XPath для таблицы выбора бренда товара.
      */
-    private static final String BRAND_TABLE = "//div[@data-meta-name='FilterDropdown' and @data-meta-value='Бренд']";
+    private static final String BRAND_TABLE = "//div[@data-meta-name='FilterDropdown' " +
+            "and @data-meta-value='Бренд']";
 
     /**
      * Объект String с началом шаблона XPath для чекбокса товара
      */
     private static final String HEAD_CHECKBOX = "//input[@type='checkbox' and @name='";
 
+    /**
+     * Объект String с закрывающим шаблоном XPath
+     */
     private static final String TAIL_CHECKBOX = "']";
 
     /**
@@ -65,6 +75,7 @@ public class SetParameters {
      *
      * @param minPrice минимальная цена для установки.
      * @param maxPrice максимальная цена для установки.
+     * @param brands   список брендов для выбора.
      */
     @Step("Шаги по установке параметров")
     public void setParameters(String minPrice, String maxPrice, List<String> brands) {
@@ -73,8 +84,7 @@ public class SetParameters {
     }
 
     /**
-     * Метод {@code setPriceParameters} устанавливает верхний и нижний диапазон цен,
-     * а так же соглашается с условиями хранения cookie.
+     * Метод {@code setPriceParameters} устанавливает верхний и нижний диапазон цен.
      *
      * @param minPrice минимальная цена для установки.
      * @param maxPrice максимальная цена для установки.
@@ -98,7 +108,9 @@ public class SetParameters {
     }
 
     /**
-     * Метод {@code choosingBrand} выбирает бренды HP и Lenovo.
+     * Метод {@code choosingBrand} выбирает указанные бренды из списка.
+     *
+     * @param brands список брендов для выбора.
      */
     @Step("Выбор бренда")
     private void choosingBrand(List<String> brands) {
@@ -108,7 +120,8 @@ public class SetParameters {
         js.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element);
 
         for (String brand : brands) {
-            WebElement checkBox = driver.findElement(By.xpath(HEAD_CHECKBOX + brand + TAIL_CHECKBOX));
+            WebElement checkBox = driver.findElement(By.xpath(HEAD_CHECKBOX
+                    + brand + TAIL_CHECKBOX));
             checkBox.click();
             loadingHelper.loading();
         }

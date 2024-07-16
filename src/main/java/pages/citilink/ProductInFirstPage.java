@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * Класс {@code CitilinkGetProduct} для автоматизации тестирования функционала получения и сравнения товаров на сайте Citilink.
- * Использует Selenium WebDriver для взаимодействия с веб-элементами.
+ * Класс {@code ProductInFirstPage} предназначен для  выполнения операций на первой странице каталога продуктов.
+ * Он включает методы для перехода на первую страницу, поиска продуктов, получения и сравнения их названий.
  *
  * @author sergeyTrbv
  */
-public class GetProductFirstPage {
+public class ProductInFirstPage {
 
     /**
      * Объект String с шаблоном XPath для кнопки первой страницы в результатах поиска.
@@ -38,7 +38,7 @@ public class GetProductFirstPage {
     private static final String PRODUCT_TITLE = ".//a[@data-meta-name='Snippet__title']";
 
     /**
-     * Объект String с шаблоном XPath для поля поиска на странице.
+     * Объект String с шаблоном XPath для строки поиска на странице.
      */
     private static final String SEARCH_WINDOW = "//input[@type='search']";
 
@@ -67,7 +67,7 @@ public class GetProductFirstPage {
      *
      * @param driver экземпляр WebDriver для управления браузером.
      */
-    public GetProductFirstPage(WebDriver driver) {
+    public ProductInFirstPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, 10);
         this.loadingHelper = new LoadingHelper(driver, wait);
@@ -75,8 +75,10 @@ public class GetProductFirstPage {
 // loadingHelper.loading();
 
     /**
-     * Метод {@code productComparison} для сравнения товаров, включающий все шаги от возвращения
-     * на первую страницу до сравнения названий.
+     * Метод {@code productComparison} для сравнения товаров, включающий все шаги от возвращения.
+     * Осуществляет переход на первую страницу, получает название первого товара,
+     * выполняет поиск этого товара, нажимает кнопку поиска, получает название второго товара
+     * и сравнивает их.
      */
     @Step("Сравнение товара")
     public void productComparison() {
@@ -88,6 +90,13 @@ public class GetProductFirstPage {
         compareProducts(firstProductTitle, secondProductTitle);
     }
 
+    /**
+     * Метод {@code getProductTitleInPage} для получения названия продукта на текущей странице.
+     *
+     * @param xpath XPath элемента заголовка продукта.
+     * @return Название первого продукта на странице.
+     * @throws NoSuchElementException если элементы с заданным XPath не найдены.
+     */
     private String getProductTitleInPage(String xpath) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
         List<WebElement> productTitles = driver.findElements(By.xpath(TITLE_ELEMENTS_IN_CATALOG));
@@ -105,27 +114,20 @@ public class GetProductFirstPage {
      */
     @Step("Возвращаемся на первую страницу")
     private void backToFirstPage() {
-//        WebElement firstPageButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(FIRST_PAGE_BUTTON)));
-//        firstPageButton.click();
-//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(PRODUCT)));
-
         List<WebElement> firstPageButtons = driver.findElements(By.xpath(FIRST_PAGE_BUTTON));
         if (!firstPageButtons.isEmpty()) {
-            WebElement firstPageButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(FIRST_PAGE_BUTTON)));
+            WebElement firstPageButton = wait.until(ExpectedConditions.
+                    elementToBeClickable(By.xpath(FIRST_PAGE_BUTTON)));
             firstPageButton.click();
-//            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(PRODUCT)));
             System.out.println("Перехожу на первую страницу.");
             loadingHelper.loading();
         } else {
-
             System.out.println("Кнопка первой страницы не найдена. Продолжаем выполнение теста на текущей странице.");
         }
-
-
     }
 
     /**
-     * Метод {@code getProductTitle} для получения названия продукта по заданному XPath.
+     * Метод {@code getProductTitle} для получения названия продукта.
      *
      * @param productXpath XPath элемента продукта.
      * @return название продукта.
@@ -181,12 +183,12 @@ public class GetProductFirstPage {
     /**
      * Метод {@code compareProducts} для сравнения двух названий продуктов.
      *
-     * @param product1 первое название продукта.
-     * @param product2 второе название продукта.
+     * @param productInFirstPage первое название продукта.
+     * @param foundProduct       второе название продукта.
      */
     @Step("Сравниваем товары")
-    private void compareProducts(String product1, String product2) {
-        Assertions.assertEquals(product1, product2, "Товары не равны");
+    private void compareProducts(String productInFirstPage, String foundProduct) {
+        Assertions.assertEquals(productInFirstPage, foundProduct, "Товары не равны");
     }
 }
 

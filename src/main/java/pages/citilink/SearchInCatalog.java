@@ -10,36 +10,44 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
- * Класс {@code CitilinkSearchInCatalog} для выполнения поиска и проверки разделов в каталоге интернет-магазина Citilink.
+ * Класс {@code SearchInCatalog} предоставляет методы для поиска и взаимодействия с разделами каталога
+ * на веб-сайте Citilink.
  *
  * @author sergeyTrbv
  */
 public class SearchInCatalog {
 
     /**
-     * Объект String с шаблоном  начала XPath для элемента "Меню" на главной странице.
+     * Объект String с шаблоном начала XPath для кнопки главного меню каталога.
      */
     private static final String HEAD_CATALOG_MENU_BUTTON = "//a[@data-meta-name='DesktopHeaderFixed__catalog-menu']" +
             "//span[contains(text(), '";
 
     /**
-     * Объект String с шаблоном XPath кнопки "Ноутбуки и компьютеры" в выпадающем меню каталога.
+     * Объект String с шаблоном XPath для кнопки раздела товара в выпадающем меню каталога.
      */
-    private static final String HEAD_LAPTOP_AND_PC_BUTTON = "//div[@class='PopupScrollContainer']" +
+    private static final String HEAD_SECTION_BUTTON = "//div[@class='PopupScrollContainer']" +
             "//span[@color='None' and text()='";
 
     /**
-     * Объект String с шаблоном XPath кнопки "Ноутбуки" в подменю "Ноутбуки и компьютеры".
+     * Объект String с шаблоном XPath кнопки подраздела из выбранного раздела ранее.
      */
-    private static final String HEAD_LAPTOP_BUTTON = "//div[@class='rcs-inner-container']//span[text()='";
+    private static final String HEAD_CHAPTER_BUTTON = "//div[@class='rcs-inner-container']//span[text()='";
 
     /**
-     * Объект String с шаблоном XPath заголовка страницы "Ноутбуки".
+     * Объект String с шаблоном XPath заголовка страницы с товаром.
      */
     private static final String HEAD_CHECK_PAGE_NAME = "//div[@data-meta-name='SubcategoryPageTitle']" +
             "//h1[@color='Main' and text()='";
 
+    /**
+     * Объект String с закрывающим шаблоном XPath для закрытия выражения поиска элемента в меню каталога.
+     */
     private static final String CATALOG_MENU_TAIL = "')]";
+
+    /**
+     * Объект String с закрывающим шаблоном XPath для закрытия выражения поиска элемента.
+     */
     private static final String TAIL = "']";
 
 
@@ -65,53 +73,66 @@ public class SearchInCatalog {
     }
 
     /**
-     * Метод {@code searchChapterInCatalog} выполняет последовательность действий для поиска раздела "Ноутбуки" в
-     * каталоге и проверяет переход на соответствующую страницу.
+     * Метод {@code searchChapterInCatalog} для поиска раздела в каталоге
+     * и проверки перехода на соответствующую страницу.
      *
-     * @param chapter название раздела (для логирования).
+     * @param textMenu текст кнопки главного меню каталога.
+     * @param section  раздел "Ноутбуки и компьютеры".
+     * @param chapter  раздел "Ноутбуки".
      */
     @Step("Шаги по поиску раздела и проверка раздела {chapter}")
     public void searchChapterInCatalog(String textMenu, String section, String chapter) {
         openCatalog(textMenu);
-        hoverOverLaptopAndPC(section);
-        selectLaptop(chapter);
-        verifyTransitionToLaptopPage(chapter);
+        hoverOverSection(section);
+        selectChapter(chapter);
+        verifyTransitionToPage(chapter);
     }
 
     /**
-     * Метод {@code openCatalog} открывает каталог, нажимая на кнопку каталога в заголовке страницы.
+     * Метод {@code openCatalog} для открытия каталога.
+     *
+     * @param textMenu текст кнопки главного меню каталога.
      */
     @Step("Открытие каталога")
     private void openCatalog(String textMenu) {
         WebElement catalogProductButton = wait.until(ExpectedConditions.
-                elementToBeClickable(By.xpath(HEAD_CATALOG_MENU_BUTTON + textMenu + CATALOG_MENU_TAIL)));
+                elementToBeClickable(By.xpath(HEAD_CATALOG_MENU_BUTTON +
+                        textMenu + CATALOG_MENU_TAIL)));
         catalogProductButton.click();
     }
 
     /**
-     * Метод {@code hoverOverLaptopAndPC} наводит курсор на кнопку "Ноутбуки и компьютеры" в выпадающем меню каталога.
+     * Метод {@code hoverOverSection} наводит курсор на переданный раздел.
+     *
+     * @param section раздел продукта.
      */
     @Step("Наведение курсора на {section}")
-    private void hoverOverLaptopAndPC(String section) {
-        WebElement laptopAndPCButton = wait.until(ExpectedConditions.
-                visibilityOfElementLocated(By.xpath(HEAD_LAPTOP_AND_PC_BUTTON + section + TAIL)));
+    private void hoverOverSection(String section) {
+        WebElement sectionButton = wait.until(ExpectedConditions.
+                visibilityOfElementLocated(By.xpath(HEAD_SECTION_BUTTON + section + TAIL)));
         Actions actions = new Actions(driver);
-        actions.moveToElement(laptopAndPCButton).perform();
+        actions.moveToElement(sectionButton).perform();
     }
 
     /**
-     * Метод {@code selectLaptop} выбирает раздел "Ноутбуки" в подменю "Ноутбуки и компьютеры".
+     * Метод {@code selectChapter} выбирает подраздел в разделе товара.
+     *
+     * @param chapter заголовок товара.
      */
     @Step("Выбор {chapter}")
-    private void selectLaptop(String chapter) {
-        WebElement laptopButton = wait.until(ExpectedConditions.
-                visibilityOfElementLocated(By.xpath(HEAD_LAPTOP_BUTTON + chapter + TAIL)));
-        laptopButton.click();
+    private void selectChapter(String chapter) {
+        WebElement productChapterButton = wait.until(ExpectedConditions.
+                visibilityOfElementLocated(By.xpath(HEAD_CHAPTER_BUTTON + chapter + TAIL)));
+        productChapterButton.click();
     }
 
-
+    /**
+     * Метод {@code verifyTransitionToPage} для проверки перехода на страницу тестируемого товара.
+     *
+     * @param chapter заголовок товара.
+     */
     @Step("Проверка перехода на страницу {chapter}")
-    private void verifyTransitionToLaptopPage(String chapter) {
+    private void verifyTransitionToPage(String chapter) {
         WebElement actualChapter = wait.until(ExpectedConditions.
                 visibilityOfElementLocated(By.xpath(HEAD_CHECK_PAGE_NAME + chapter + TAIL)));
         String actualText = actualChapter.getText();

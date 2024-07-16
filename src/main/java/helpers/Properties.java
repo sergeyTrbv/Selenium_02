@@ -5,6 +5,8 @@ import org.aeonbits.owner.ConfigFactory;
 /**
  * Класс `Properties` предоставляет статический экземпляр интерфейса `TestsProperties`, который используется
  * для доступа к конфигурационным свойствам.
+ *
+ * @author SergeyTrbv
  */
 public class Properties {
 

@@ -32,15 +32,19 @@ public class BaseTest {
     public void before() {
         System.setProperty("webdriver.chrome.driver", System.getenv("CHROME_DRIVER"));
         DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, Properties.testsProperties.pageLoadStrategy());
+        capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, Properties.
+                testsProperties.pageLoadStrategy());
         capabilities.setCapability("timeouts", ImmutableMap.of("pageLoad",
                 Properties.testsProperties.pageLoadTimeoutCapabilities()));
 
         webDriver = new ChromeDriver(capabilities);
         webDriver.manage().window().maximize();
-        webDriver.manage().timeouts().implicitlyWait(Properties.testsProperties.implicitWaitTimeout(), TimeUnit.SECONDS);
-        webDriver.manage().timeouts().pageLoadTimeout(Properties.testsProperties.pageLoadTimeout(), TimeUnit.SECONDS);
-        webDriver.manage().timeouts().setScriptTimeout(Properties.testsProperties.scripttTimeout(), TimeUnit.SECONDS);
+        webDriver.manage().timeouts().implicitlyWait(Properties.
+                testsProperties.implicitWaitTimeout(), TimeUnit.SECONDS);
+        webDriver.manage().timeouts().pageLoadTimeout(Properties.
+                testsProperties.pageLoadTimeout(), TimeUnit.SECONDS);
+        webDriver.manage().timeouts().setScriptTimeout(Properties.
+                testsProperties.scriptTimeout(), TimeUnit.SECONDS);
     }
 
     @AfterEach

@@ -11,8 +11,10 @@ import pages.citilink.*;
 import java.util.List;
 
 /**
- * Класс {@code StepsAll} содержит статические методы, которые представляют собой шаги для выполнения различных действий
- * в процессе тестирования веб-сайта. Эти методы используются для навигации по сайту, поиска и проверки элементов,
+ * Класс {@code StepsAll} содержит статические методы, которые представляют собой
+ * шаги для выполнения различных действий
+ * в процессе тестирования веб-сайта. Эти методы используются для навигации по сайту,
+ * поиска и проверки элементов,
  * установки параметров и сравнения продуктов.
  *
  * @author sergeyTrbv
@@ -85,7 +87,7 @@ public class StepsAll {
     @Step("Проверка элементов на первой и остальных страницах")
     public static void checkingElements(int minProductCountInPage, List<String> brand,
                                         String minPrice, String maxPrice) {
-        LaptopCountTest laptopCountTest = new LaptopCountTest(driver);
+        ProductsMeetsConditions laptopCountTest = new ProductsMeetsConditions(driver);
         laptopCountTest.checkProductQuantityOnFirstPage(minProductCountInPage);
         laptopCountTest.checkConditionsOnAllPages(brand, minPrice, maxPrice);
     }
@@ -95,7 +97,7 @@ public class StepsAll {
      */
     @Step("Возвращение на первую страницу, получение элемента и повторный его поиск")
     public static void returnAndSearchElement() {
-        GetProductFirstPage citilinkGetProduct = new GetProductFirstPage(driver);
+        ProductInFirstPage citilinkGetProduct = new ProductInFirstPage(driver);
         citilinkGetProduct.productComparison();
     }
 }

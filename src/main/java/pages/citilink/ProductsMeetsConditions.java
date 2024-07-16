@@ -15,11 +15,14 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * Класс {@code LaptopCountTest} предназначен для тестирования количества и характеристик ноутбуков в каталоге.
+ * Класс {@code LaptopCountTest} предназначен для проверки количества и условий
+ * элементов на страницах каталога ноутбуков.
+ * Он использует WebDriver для управления браузером, WebDriverWait для ожидания
+ * элементов и LoadingHelper для управления загрузкой страниц.
  *
  * @author sergeyTrbv
  */
-public class LaptopCountTest {
+public class ProductsMeetsConditions {
 
     /**
      * Объект String с шаблоном XPath для карточек продуктов в каталоге.
@@ -44,12 +47,12 @@ public class LaptopCountTest {
             "//span[@data-meta-is-total='notTotal']";
 
     /**
-     * Экземпляр WebDriver для взаимодействия с браузером.
+     * Объект типа {@code WebDriver} для взаимодействия с браузером.
      */
     private WebDriver driver;
 
     /**
-     * Экземпляр WebDriverWait для ожидания элементов на странице.
+     * Объект типа {@code WebDriverWait} использующийся для ожидания элементов на странице.
      */
     private WebDriverWait wait;
 
@@ -68,7 +71,7 @@ public class LaptopCountTest {
      *
      * @param driver экземпляр WebDriver для взаимодействия с браузером.
      */
-    public LaptopCountTest(WebDriver driver) {
+    public ProductsMeetsConditions(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, 20);
         this.loadingHelper = new LoadingHelper(driver, wait);
@@ -76,7 +79,6 @@ public class LaptopCountTest {
 
     /**
      * Метод {@code checkProductQuantityOnFirstPage} проверяет количество элементов на первой странице каталога.
-     * Убеждается, что количество элементов не меньше {@code MIN_PRODUCT_COUNT}.
      */
     @Step("Проверка количества элементов на первой странице каталога")
     public void checkProductQuantityOnFirstPage(int minProductCountInPage) {
@@ -88,6 +90,10 @@ public class LaptopCountTest {
     /**
      * Метод {@code checkConditionsOnAllPages} проверяет условия на всех страницах каталога.
      * Переходит на следующую страницу, пока она доступна, и проверяет условия на каждой странице.
+     *
+     * @param brand    список ожидаемых брендов.
+     * @param minPrice минимальная ожидаемая цена.
+     * @param maxPrice максимальная ожидаемая цена.
      */
     @Step("Проверка соблюдения условий на всех страницах у всех элементов")
     public void checkConditionsOnAllPages(List<String> brand, String minPrice, String maxPrice) {
@@ -102,24 +108,29 @@ public class LaptopCountTest {
     /**
      * Метод {@code checkPageConditions} проверяет условия на текущей странице каталога.
      * Включает проверку названий брендов и цен.
+     *
+     * @param brand    список ожидаемых брендов.
+     * @param minPrice минимальная ожидаемая цена.
+     * @param maxPrice максимальная ожидаемая цена.
      */
     @Step("Проверка условий на текущей странице")
     private void checkPageConditions(List<String> brand, String minPrice, String maxPrice) {
-//        waitForPageLoad();
         checkBrandNames(brand);
         checkPrices(minPrice, maxPrice);
     }
 
     /**
      * Метод {@code checkBrandNames} проверяет названия брендов на текущей странице.
-     * Убеждается, что названия содержат "HP" или "Lenovo".
+     *
+     * @param brand список ожидаемых брендов.
      */
     @Step("Проверка названий брендов на текущей странице")
     private void checkBrandNames(List<String> brand) {
         List<WebElement> productElementsTitle = driver.findElements(By.xpath(TITLE_ELEMENTS_IN_CATALOG));
         for (WebElement productElement : productElementsTitle) {
             String title = productElement.getAttribute("title");
-            boolean containsBrand = brand.stream().anyMatch(b -> Pattern.compile(Pattern.quote(b), Pattern.CASE_INSENSITIVE).matcher(title).find());
+            boolean containsBrand = brand.stream().anyMatch(b -> Pattern.compile(Pattern.quote(b),
+                    Pattern.CASE_INSENSITIVE).matcher(title).find());
             Assertions.assertTrue(containsBrand,
                     "На странице " + currentPage +
                             " название бренда техники не соответствует ни одному из ожидаемых брендов: " + brand);
@@ -129,7 +140,9 @@ public class LaptopCountTest {
 
     /**
      * Метод {@code checkPrices} проверяет цены на текущей странице.
-     * Убеждается, что цены находятся в диапазоне от {@code MIN_PRICE} до {@code MAX_PRICE}.
+     *
+     * @param minPrice минимальная ожидаемая цена.
+     * @param maxPrice максимальная ожидаемая цена.
      */
     @Step("Проверка цен на текущей странице")
     private void checkPrices(String minPrice, String maxPrice) {
@@ -164,10 +177,14 @@ public class LaptopCountTest {
         }
     }
 
+    /**
+     * Метод {@code clickElement} для клика по элементу с ожиданием и обработкой загрузки страницы.
+     *
+     * @param element элемент, по которому нужно кликнуть.
+     */
     private void clickElement(WebElement element) {
         wait.until(ExpectedConditions.elementToBeClickable(element));
-        //элемент перехвачен
-        element.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
         loadingHelper.loading();
         wait.until(ExpectedConditions.stalenessOf(element));
     }
